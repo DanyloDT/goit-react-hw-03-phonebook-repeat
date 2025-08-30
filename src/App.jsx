@@ -3,6 +3,7 @@ import { ContactForm } from './components/ContactForm/ContactForm';
 import { ContactList } from './components/ContactList/ContactList';
 import './App.css';
 import { Filter } from './components/Filter/Filter';
+import { load, save } from './components/Utils/localStorage';
 
 export class App extends Component {
   state = {
@@ -11,15 +12,16 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    if (contacts) {
-      this.setState({ contacts: JSON.parse(contacts) });
-    }
+    const { contact } = this.state;
+    const data = load('contacts') ?? contact;
+
+    this.setState({ contacts: data });
   }
 
   componentDidUpdate(_, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    const { contacts } = this.state;
+    if (contacts !== prevState.contacts) {
+      save('contacts', contacts);
     }
   }
 
